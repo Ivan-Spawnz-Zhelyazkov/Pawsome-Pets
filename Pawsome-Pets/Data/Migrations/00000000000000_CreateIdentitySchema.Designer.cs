@@ -9,7 +9,7 @@ using Pawsome_Pets.Data;
 
 namespace Pawsome_Pets.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(PawsomeDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
