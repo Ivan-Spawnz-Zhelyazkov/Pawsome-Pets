@@ -11,7 +11,7 @@ namespace Pawsome_Pets.Data
 		{
 		}
 
-		public DbSet<Animal> Animal { get; set; }
+		public DbSet<Animal> Animals { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<AdoptionRequest> AdoptionRequests { get; set; }
 		public DbSet<CaretakingRequest> CaretakingRequests { get; set; }
@@ -26,7 +26,7 @@ namespace Pawsome_Pets.Data
 				new Category { Id = 2, Name = "Cats" },
 				new Category { Id = 3, Name = "Birds" },
 				new Category { Id = 4, Name = "Reptiles" },
-				new Category { Id = 5, Name = "Fish" }
+				new Category { Id = 5, Name = "Fishes" }
 			);
 
 			// Animal -> Giver

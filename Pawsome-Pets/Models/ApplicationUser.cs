@@ -15,6 +15,7 @@ namespace Pawsome_Pets.Models
 
 		//AdoptionRequests
 		public ICollection<AdoptionRequest> AdoptionRequests { get; set; } = new List<AdoptionRequest>();
+
 		// CaretakingRequests
 		public ICollection<CaretakingRequest> CaretakingRequests { get; set; } = new List<CaretakingRequest>();
 	}
