@@ -3,9 +3,12 @@
 	public class Animal
 	{
 		public int Id { get; set; }
-
 		public string Name { get; set; } = null!;
 		public int Age { get; set; }
+		public string Gender { get; set; } = null!;
+
+		public string Breed = null!;
+		public bool IsVaccinated { get; set; }
 		public string Description { get; set; } = null!;
 		public string ImageUrl { get; set; } = null!;
 		public bool IsAdopted { get; set; } = false;
