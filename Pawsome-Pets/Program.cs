@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pawsome_Pets.Data;
 using Pawsome_Pets.Models;
+using Pawsome_Pets.Services.Contracts;
+using Pawsome_Pets.Services.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
+builder.Services.AddScoped<IAnimalService, AnimalService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 var app = builder.Build();

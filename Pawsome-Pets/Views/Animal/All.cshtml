@@ -1,0 +1,52 @@
+﻿@model Pawsome_Pets.Views.Animal.AnimalListViewModel
+
+@{
+    ViewData["Title"] = "All Animals";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Filter dropdown -->
+<form asp-action="All" method="get" class="mb-3">
+    <label for="categoryFilter">Filter by Category:</label>
+    <select id="categoryFilter" name="categoryId" class="form-control" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        @foreach (var category in Model.Categories)
+        {
+            <option value="@category.Id" selected="@(category.Id == Model.SelectedCategoryId)">
+                @category.Name
+            </option>
+        }
+    </select>
+</form>
+
+<!-- Animal List -->
+@if (!Model.Animals.Any())
+{
+    <p>No animals available.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var animal in Model.Animals)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <img src="@animal.ImageUrl" class="card-img-top" alt="@animal.Name" />
+                    <div class="card-body">
+                        <h5 class="card-title">@animal.Name</h5>
+                        <p class="card-text">
+                            <strong>Breed:</strong> @animal.Breed<br />
+                            <strong>Age:</strong> @animal.Age<br />
+                            <strong>Gender:</strong> @animal.Gender<br />
+                            <strong>Vaccinated:</strong> @(animal.IsVaccinated ? "Yes" : "No")
+                        </p>
+                        <a asp-action="Details" asp-route-id="@animal.Id" class="btn btn-primary btn-sm">Details</a>
+                        <a asp-action="Edit" asp-route-id="@animal.Id" class="btn btn-secondary btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@animal.Id" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
