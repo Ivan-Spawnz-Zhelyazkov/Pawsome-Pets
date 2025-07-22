@@ -4,6 +4,7 @@ using Pawsome_Pets.Models;
 using Pawsome_Pets.Views.Accounts;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AspNetCoreGeneratedDocument;
+using Pawsome_Pets.Views.Account;
 
 
 namespace Pawsome_Pets.Controllers
@@ -89,7 +90,52 @@ namespace Pawsome_Pets.Controllers
 			return View(model);
 		}
 
+		//Login logic, replacing Identity logic with custom logic
 
+
+		[HttpGet]
+		public IActionResult Login()
+		{
+			return View(new LoginViewModel());
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Login(LoginViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+
+			ApplicationUser? user = await userManager.FindByEmailAsync(model.Email);
+			if (user == null)
+			{
+				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+				return View(model);
+			}
+
+			Microsoft.AspNetCore.Identity.SignInResult result = await signInManager
+				.CheckPasswordSignInAsync(user, model.Password, false);
+
+			if (result.Succeeded)
+			{
+				await signInManager.SignInAsync(user, model.RememberMe);
+				return RedirectToAction("Index", "Home");
+			}
+
+			ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+			return View(model);
+
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Logout()
+		{
+			await signInManager.SignOutAsync();
+			return RedirectToAction("Index", "Home");
+		}
 
 	}
 }

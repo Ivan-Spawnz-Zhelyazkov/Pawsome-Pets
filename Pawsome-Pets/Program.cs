@@ -21,8 +21,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 	options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<PawsomeDbContext>()
-.AddDefaultTokenProviders()
-.AddDefaultUI();
+.AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.LoginPath = "/Account/Login";
+	options.AccessDeniedPath = "/Account/AccessDenied";
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
