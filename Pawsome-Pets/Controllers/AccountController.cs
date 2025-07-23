@@ -73,6 +73,7 @@ namespace Pawsome_Pets.Controllers
 				FirstName = model.FirstName,
 				LastName = model.LastName,
 				PhoneNumber = model.PhoneNumber,
+				Email = email
 			};
 			IdentityResult result = await userManager.CreateAsync(user, password);
 
