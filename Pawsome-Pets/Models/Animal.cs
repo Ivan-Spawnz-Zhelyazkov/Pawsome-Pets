@@ -7,7 +7,7 @@
 		public int Age { get; set; }
 		public string Gender { get; set; } = null!;
 
-		public string Breed = null!;
+		public string Breed { get; set; }  = null!;
 		public bool IsVaccinated { get; set; }
 		public string Description { get; set; } = null!;
 		public string ImageUrl { get; set; } = null!;

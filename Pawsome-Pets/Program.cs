@@ -56,7 +56,7 @@ using (IServiceScope scope = app.Services.CreateScope())
 	//Admin seed
 
 	string adminEmail = "admin@pawsomepets.com";
-	string adminPassword = "Admin12345";
+	string adminPassword = "Admin-12345";
 
 	ApplicationUser? adminUser = await userManager.FindByEmailAsync(adminEmail);
 

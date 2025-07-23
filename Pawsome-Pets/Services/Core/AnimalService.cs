@@ -2,6 +2,7 @@
 using Pawsome_Pets.Data;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
+using Pawsome_Pets.Views.Animal;
 
 namespace Pawsome_Pets.Services.Core
 {
@@ -64,6 +65,29 @@ namespace Pawsome_Pets.Services.Core
 				.Include(a => a.Category)
 				.Where(a => a.CategoryId == categoryId)
 				.ToListAsync();
+		}
+
+		// Details of an animal logic
+
+		public async Task<AnimalDetailsViewModel?> GetDetailsAsync(int id)
+		{
+			return await dbContext.Animals
+				.Where(a => a.Id == id)
+				.Select(a => new AnimalDetailsViewModel
+				{
+					Id = a.Id,
+					Name = a.Name,
+					Breed = a.Breed,
+					Age = a.Age,
+					Gender = a.Gender,
+					ImageUrl = a.ImageUrl,
+					IsVaccinated = a.IsVaccinated,
+					GiverId = a.GiverId,
+					IsAdopted = a.IsAdopted,
+					CategoryName = a.Category.Name,
+					Description = a.Description
+				})
+				.FirstOrDefaultAsync();
 		}
 	}
 }

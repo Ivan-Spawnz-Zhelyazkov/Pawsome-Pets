@@ -1,0 +1,33 @@
+﻿@model Pawsome_Pets.Views.Animal.AnimalDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+<div class="card mb-3" style="max-width: 600px;">
+    <img src="@Model.ImageUrl" class="card-img-top rounded" alt="@Model.Name" style="object-fit: cover; max-height: 400px;" />
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p><strong>Breed:</strong> @Model.Breed</p>
+        <p><strong>Age:</strong> @Model.Age</p>
+        <p><strong>Gender:</strong> @Model.Gender</p>
+        <p><strong>Vaccinated:</strong> @(Model.IsVaccinated ? "Yes" : "No")</p>
+        <p><strong>Category:</strong> @Model.CategoryName</p>
+        <p><strong>Description:</strong><br />@Model.Description</p>
+
+        <div class="mt-4">
+            @if (ViewBag.IsAdmin || ViewBag.IsOwner)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+            }
+            else if (ViewBag.IsAdopterOrCaretaker)
+            {
+                <a asp-controller="AdoptionRequest" asp-action="Create" asp-route-animalId="@Model.Id" class="btn btn-success me-2">Request for Adoption</a>
+                <a asp-controller="CaretakingRequest" asp-action="Create" asp-route-animalId="@Model.Id" class="btn btn-info">Request for Caretaking</a>
+            }
+        </div>
+    </div>
+</div>

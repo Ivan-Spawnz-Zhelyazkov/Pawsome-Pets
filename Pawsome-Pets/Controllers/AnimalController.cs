@@ -99,6 +99,39 @@ namespace Pawsome_Pets.Controllers
 			return RedirectToAction(nameof(All));
 		}
 
+		// Details for the pets
+		public async Task<IActionResult> Details(int id)
+		{
+			Animal animal = await animalService.GetAnimalByIdAsync(id);
+			if (animal == null)
+			{
+				return NotFound();
+			}
+
+			AnimalDetailsViewModel model = new AnimalDetailsViewModel
+			{
+				Id = animal.Id,
+				Name = animal.Name,
+				Breed = animal.Breed,
+				Age = animal.Age,
+				Gender = animal.Gender,
+				ImageUrl = animal.ImageUrl,
+				IsVaccinated = animal.IsVaccinated,
+				GiverId = animal.GiverId,
+				IsAdopted = animal.IsAdopted,
+				CategoryName = animal.Category.Name,
+				Description = animal.Description
+			};
+
+			string currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+			ViewBag.IsAdmin = User.IsInRole("Admin");
+			ViewBag.IsOwner = currentUserId != null && currentUserId == animal.GiverId;
+			ViewBag.IsAdopterOrCaretaker = User.IsInRole("Adopter") || User.IsInRole("Caretaker");
+
+			return View(model);
+		}
+
 		//Edit Existing Animal action
 
 		public async Task<IActionResult>Edit(int id)
