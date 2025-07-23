@@ -5,12 +5,12 @@ namespace Pawsome_Pets.Views.Animal
 {
 	public class AnimalListViewModel
 	{
-		public IEnumerable<Pawsome_Pets.Models.Animal> Animals { get; set; } = new List<Pawsome_Pets.Models.Animal>();
-
+		public IEnumerable<AnimalViewModel> Animals { get; set; } = new List<AnimalViewModel>();
 
 		public int? SelectedCategoryId { get; set; }
 
 		public IEnumerable<Category> Categories { get; set; } = new List<Category>();
+
 	}
 }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
 using Pawsome_Pets.Views.Animal;
@@ -25,9 +26,22 @@ namespace Pawsome_Pets.Controllers
 				animals = await animalService.GetAllAnimalsAsync();
 			}
 
+			IEnumerable<AnimalViewModel> animalViewModels = animals.Select(a => new AnimalViewModel
+			{
+				Id = a.Id,
+				Name = a.Name,
+				Age = a.Age,
+				Gender = a.Gender,
+				Breed = a.Breed,
+				IsVaccinated = a.IsVaccinated,
+				ImageUrl = a.ImageUrl,
+				IsAdopted = a.IsAdopted,
+				CategoryName = a.Category.Name
+			}).ToList();
+
 			AnimalListViewModel viewModel = new AnimalListViewModel
 			{
-				Animals = animals,
+				Animals = animalViewModels,
 				SelectedCategoryId = categoryId,
 				Categories = await categoryService.GetAllCategoriesAsync()
 			};
@@ -41,37 +55,48 @@ namespace Pawsome_Pets.Controllers
 			this.categoryService = categoryService;
 		}
 
+		//Add an Animal
 
-		public async Task<IActionResult> Index(int? categoryId)
+		[Authorize(Roles = "Admin,Giver")]
+		public async Task<IActionResult> Add()
 		{
-			IEnumerable<Animal> animals;
-			if (categoryId.HasValue)
+			AnimalFormViewModel model = new AnimalFormViewModel
 			{
-				animals = await animalService.GetAnimalsByCategoryAsync(categoryId.Value);
-				ViewBag.CurrentCategoryId = categoryId.Value;
-			}
-			else
-			{
-				animals = await animalService.GetAllAnimalsAsync();
-			}
-			return View(animals);
+				Categories = (await categoryService.GetAllCategoriesAsync())
+					.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+			};
+
+			return View(model);
 		}
-		// Create a new animal action
-		public IActionResult Create()
-		{
-					return View();
-		}
-		
+
 		[HttpPost]
+		[Authorize(Roles = "Admin,Giver")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create(Animal animal)
+		public async Task<IActionResult> Add(AnimalFormViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
-				return View(animal);
+				model.Categories = (await categoryService.GetAllCategoriesAsync())
+					.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
+				return View(model);
 			}
+
+			Animal animal = new Animal
+			{
+				Name = model.Name,
+				Age = model.Age,
+				Gender = model.Gender,
+				Breed = model.Breed,
+				IsVaccinated = model.IsVaccinated,
+				Description = model.Description,
+				ImageUrl = model.ImageUrl,
+				CategoryId = model.CategoryId,
+				GiverId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value
+			};
+
 			await animalService.CreateAsync(animal);
-			return RedirectToAction(nameof(Index));
+
+			return RedirectToAction(nameof(All));
 		}
 
 		//Edit Existing Animal action
