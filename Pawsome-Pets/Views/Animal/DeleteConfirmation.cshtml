@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Deletion Successful";
+}
+
+<div class="alert alert-success mt-4" role="alert" style="max-width: 500px; margin: auto; text-align: center;">
+    <h4 class="alert-heading">Animal deleted successfully!</h4>
+    <p>The animal was removed from the listings but can be restored by admin if needed.</p>
+    <hr />
+    <a href="@Url.Action("All", "Animal")" class="btn btn-primary">Okay</a>
+</div>

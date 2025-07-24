@@ -165,7 +165,7 @@ namespace Pawsome_Pets.Controllers
 				Categories = categories
 								.Select(c => new SelectListItem
 								{
-									Value =c.Id.ToString(),
+									Value = c.Id.ToString(),
 									Text = c.Name,
 									Selected = c.Id == animal.CategoryId
 								}).ToList()
@@ -175,14 +175,14 @@ namespace Pawsome_Pets.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit (int id, AnimalFormViewModel model)
+		public async Task<IActionResult> Edit(int id, AnimalFormViewModel model)
 		{
 			if (id != model.Id)
 			{
 				return BadRequest("Animal ID mismatch.");
 			}
 			Animal? animal = await animalService.GetAnimalByIdAsync(id);
-			if(animal == null)
+			if (animal == null)
 			{
 				return NotFound();
 			}
@@ -190,11 +190,11 @@ namespace Pawsome_Pets.Controllers
 			string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 			bool isAdmin = User.IsInRole("Admin");
 			bool isOwner = animal.GiverId == currentUserId;
-			if(!isAdmin && !isOwner)
+			if (!isAdmin && !isOwner)
 			{
 				return Forbid();
 			}
-			if(!ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
 				var categories = await categoryService.GetAllCategoriesAsync();
 				model.Categories = categories
@@ -225,20 +225,43 @@ namespace Pawsome_Pets.Controllers
 
 		public async Task<IActionResult> Delete(int id)
 		{
-			Animal animal = await animalService.GetAnimalByIdAsync(id);
-			if (animal == null)
+			Animal? animal = await animalService.GetAnimalByIdAsync(id);
+			if (animal == null || animal.IsDeleted)
 			{
 				return NotFound();
 			}
+
+			string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+			bool isAdmin = User.IsInRole("Admin");
+			bool isOwner = animal.GiverId == currentUserId;
+
+			if (!isAdmin && !isOwner)
+			{
+				return Forbid();
+			}
 			return View(animal);
 		}
+
 		[HttpPost, ActionName("Delete")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
-			await animalService.DeleteAsync(id);
-			return RedirectToAction(nameof(Index));
-		}
+			string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+			Animal? animal = await animalService.GetAnimalByIdAsync(id);
+			if (animal == null || animal.IsDeleted)
+			{
+				return NotFound();
+			}
 
+			bool isAdmin = User.IsInRole("Admin");
+			bool isOwner = animal.GiverId == currentUserId;
+
+			if (!isAdmin && !isOwner)
+			{
+				return Forbid();
+			}
+			await animalService.SoftDeleteAsync(id);
+			return RedirectToAction(nameof(All));
+		}
 	}
 }

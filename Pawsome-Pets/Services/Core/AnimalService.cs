@@ -19,6 +19,7 @@ namespace Pawsome_Pets.Services.Core
 		public async Task<IEnumerable<Animal>> GetAllAnimalsAsync()
 		{
 			return await dbContext.Animals
+				.Where(a => !a.IsDeleted)
 				.Include(a => a.Category)
 				.Include(a => a.Giver)
 				.ToListAsync();
@@ -28,6 +29,7 @@ namespace Pawsome_Pets.Services.Core
 		public async Task<Animal?> GetAnimalByIdAsync(int id)
 		{
 			return await dbContext.Animals
+				.Where(a => !a.IsDeleted)
 				.Include(a => a.Category)
 				.Include(a => a.Giver)
 				.FirstOrDefaultAsync(a => a.Id == id);
@@ -47,14 +49,16 @@ namespace Pawsome_Pets.Services.Core
 			await dbContext.SaveChangesAsync();
 		}
 
-		//Delete animal logic
-		public async Task DeleteAsync(int id)
+		//Delete(from site/left in DB) animal logic
+		public async Task SoftDeleteAsync(int id)
 		{
 			Animal? animal = await dbContext.Animals.FindAsync(id);
-			if (animal != null)
+			if (animal != null && !animal.IsDeleted)
 			{
-				dbContext.Animals.Remove(animal);
+				animal.IsDeleted = true;
 				await dbContext.SaveChangesAsync();
+
+				Console.WriteLine( $"Animal with Id {id} is soft deleted");
 			}
 		}
 
@@ -62,6 +66,7 @@ namespace Pawsome_Pets.Services.Core
 		public async Task<IEnumerable<Animal>> GetAnimalsByCategoryAsync(int categoryId)
 		{
 			return await dbContext.Animals
+				.Where(a => !a.IsDeleted)
 				.Include(a => a.Category)
 				.Where(a => a.CategoryId == categoryId)
 				.ToListAsync();

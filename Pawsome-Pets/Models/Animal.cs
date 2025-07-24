@@ -12,6 +12,7 @@
 		public string Description { get; set; } = null!;
 		public string ImageUrl { get; set; } = null!;
 		public bool IsAdopted { get; set; } = false;
+		public bool IsDeleted { get; set; } = false;
 
 		//Categories
 		public int CategoryId { get; set; }

@@ -8,7 +8,7 @@ namespace Pawsome_Pets.Services.Contracts
 		Task<Animal?> GetAnimalByIdAsync(int id);
 		Task CreateAsync(Animal animal);
 		Task UpdateAsync(Animal animal);
-		Task DeleteAsync(int id);
+		Task SoftDeleteAsync(int id);
 
 		Task<IEnumerable<Animal>> GetAnimalsByCategoryAsync(int categoryId);
 	}
