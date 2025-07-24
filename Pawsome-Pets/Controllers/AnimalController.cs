@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
 using Pawsome_Pets.Views.Animal;
+using System.Security.Claims;
 
 
 namespace Pawsome_Pets.Controllers
@@ -134,30 +135,91 @@ namespace Pawsome_Pets.Controllers
 
 		//Edit Existing Animal action
 
-		public async Task<IActionResult>Edit(int id)
+		[HttpGet]
+		public async Task<IActionResult> Edit(int id)
 		{
-			Animal animal = await animalService.GetAnimalByIdAsync(id);
+			Animal? animal = await animalService.GetAnimalByIdAsync(id);
 			if (animal == null)
 			{
 				return NotFound();
 			}
-			return View(animal);
+			string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+			bool isAdmin = User.IsInRole("Admin");
+			bool isOwner = animal.GiverId == currentUserId;
+
+			if (!isAdmin && !isOwner)
+			{
+				return Forbid();
+			}
+			var categories = await categoryService.GetAllCategoriesAsync();
+			AnimalFormViewModel model = new AnimalFormViewModel
+			{
+				Id = animal.Id,
+				Name = animal.Name,
+				Age = animal.Age,
+				Gender = animal.Gender,
+				Breed = animal.Breed,
+				Description = animal.Description,
+				IsVaccinated = animal.IsVaccinated,
+				CategoryId = animal.CategoryId,
+				Categories = categories
+								.Select(c => new SelectListItem
+								{
+									Value =c.Id.ToString(),
+									Text = c.Name,
+									Selected = c.Id == animal.CategoryId
+								}).ToList()
+			};
+			return View(model);
 		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult>Edit(int id, Animal animal)
+		public async Task<IActionResult> Edit (int id, AnimalFormViewModel model)
 		{
-			if (id != animal.Id)
+			if (id != model.Id)
 			{
-				return BadRequest();
+				return BadRequest("Animal ID mismatch.");
 			}
-			if (!ModelState.IsValid)
+			Animal? animal = await animalService.GetAnimalByIdAsync(id);
+			if(animal == null)
 			{
-				return View(animal);
+				return NotFound();
 			}
+
+			string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+			bool isAdmin = User.IsInRole("Admin");
+			bool isOwner = animal.GiverId == currentUserId;
+			if(!isAdmin && !isOwner)
+			{
+				return Forbid();
+			}
+			if(!ModelState.IsValid)
+			{
+				var categories = await categoryService.GetAllCategoriesAsync();
+				model.Categories = categories
+					.Select(c => new SelectListItem
+					{
+						Value = c.Id.ToString(),
+						Text = c.Name,
+						Selected = c.Id == animal.CategoryId
+					}).ToList();
+
+				return View(model);
+			}
+			animal.Name = model.Name;
+			animal.Age = model.Age;
+			animal.Gender = model.Gender;
+			animal.Breed = model.Breed;
+			animal.Description = model.Description;
+			animal.ImageUrl = model.ImageUrl;
+			animal.IsVaccinated = model.IsVaccinated;
+			animal.CategoryId = model.CategoryId;
+
 			await animalService.UpdateAsync(animal);
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(Details), new { id = animal.Id });
 		}
+
 
 		//Delete Animal action
 
