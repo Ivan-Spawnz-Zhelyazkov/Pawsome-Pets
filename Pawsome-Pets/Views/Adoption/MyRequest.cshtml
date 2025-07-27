@@ -1,0 +1,42 @@
+﻿@model List<Pawsome_Pets.Views.Adoption.AdoptionRequestViewModel>
+
+@{
+    ViewData["Title"] = "My Adoption Requests";
+}
+
+<h2 class="mt-3">@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You haven't submitted any adoption requests yet.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-4 mt-3">
+        @foreach (var request in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="@request.AnimalImageUrl" class="card-img-top" alt="@request.AnimalName" style="height: 250px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@request.AnimalName</h5>
+                        <p class="card-text mb-1">
+                            <strong>Status:</strong>
+                            <span class="badge
+                                        @(request.Status == "Pending" ? "bg-warning text-dark" :
+                                                                    request.Status == "Approved" ? "bg-success" :
+                                                                    "bg-danger")">
+                        @request.Status
+                    </span>
+                </p>
+                @if (!string.IsNullOrEmpty(request.Message))
+                        {
+                            <p class="card-text"><strong>Your Message:</strong> @request.Message</p>
+                        }
+                        <p class="card-text"><small class="text-muted">Submitted: @request.CreatedOn.ToShortDateString()</small></p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -19,7 +19,6 @@ namespace Pawsome_Pets.Controllers
 		{
 			const int PageSize = 6;
 
-
 			IEnumerable<Animal> animals;
 
 			if (categoryId.HasValue)

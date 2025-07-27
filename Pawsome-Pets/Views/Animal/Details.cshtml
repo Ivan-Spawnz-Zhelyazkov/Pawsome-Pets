@@ -23,11 +23,15 @@
                 <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edit</a>
                 <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
             }
-            else if (ViewBag.IsAdopterOrCaretaker)
+            @if (User.IsInRole("Adopter"))
             {
                 <a asp-controller="AdoptionRequest" asp-action="Create" asp-route-animalId="@Model.Id" class="btn btn-success me-2">Request for Adoption</a>
+            }
+            else if (User.IsInRole("Caretaker"))
+            {
                 <a asp-controller="CaretakingRequest" asp-action="Create" asp-route-animalId="@Model.Id" class="btn btn-info">Request for Caretaking</a>
             }
+           
         </div>
     </div>
 </div>
