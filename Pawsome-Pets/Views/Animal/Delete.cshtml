@@ -15,7 +15,6 @@
     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
 </form>
 
-<!-- Popup modal -->
 <div id="confirmationModal" class="modal" tabindex="-1" style="display:none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); background-color: white; border: 1px solid #ccc; padding: 20px; z-index: 1050; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
     <p>Are you sure?</p>
     <button onclick="submitDelete()" class="btn btn-danger">Yes</button>

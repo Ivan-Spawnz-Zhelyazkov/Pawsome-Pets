@@ -58,7 +58,6 @@ namespace Pawsome_Pets.Services.Core
 				animal.IsDeleted = true;
 				await dbContext.SaveChangesAsync();
 
-				Console.WriteLine( $"Animal with Id {id} is soft deleted");
 			}
 		}
 

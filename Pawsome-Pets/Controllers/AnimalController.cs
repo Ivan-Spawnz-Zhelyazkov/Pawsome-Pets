@@ -15,19 +15,31 @@ namespace Pawsome_Pets.Controllers
 		private readonly IAnimalService animalService;
 		private readonly ICategoryService categoryService;
 
-		public async Task<IActionResult> All(int? categoryId)
+		public async Task<IActionResult> All(int? categoryId,int page =1)
 		{
+			const int PageSize = 6;
+
+
 			IEnumerable<Animal> animals;
+
 			if (categoryId.HasValue)
 			{
 				animals = await animalService.GetAnimalsByCategoryAsync(categoryId.Value);
 			}
 			else
 			{
-				animals = await animalService.GetAllAnimalsAsync();
+				animals = (await animalService.GetAllAnimalsAsync()).ToList();
 			}
 
-			IEnumerable<AnimalViewModel> animalViewModels = animals.Select(a => new AnimalViewModel
+			int totalAnimals = animals.Count();
+			int totalPages = (int)Math.Ceiling(totalAnimals / (double)PageSize);
+
+			List<Animal> paginatedAnimals = animals
+				.Skip((page - 1) * PageSize)
+				.Take(PageSize)
+				.ToList();
+
+			IEnumerable<AnimalViewModel> animalViewModels = paginatedAnimals.Select(a => new AnimalViewModel
 			{
 				Id = a.Id,
 				Name = a.Name,
@@ -37,14 +49,17 @@ namespace Pawsome_Pets.Controllers
 				IsVaccinated = a.IsVaccinated,
 				ImageUrl = a.ImageUrl,
 				IsAdopted = a.IsAdopted,
-				CategoryName = a.Category.Name
+				CategoryName = a.Category.Name,
+				GiverId = a.GiverId
 			}).ToList();
 
 			AnimalListViewModel viewModel = new AnimalListViewModel
 			{
 				Animals = animalViewModels,
 				SelectedCategoryId = categoryId,
-				Categories = await categoryService.GetAllCategoriesAsync()
+				Categories = await categoryService.GetAllCategoriesAsync(),
+				CurrentPage = page,
+				TotalPages = totalPages
 			};
 
 			return View(viewModel);
