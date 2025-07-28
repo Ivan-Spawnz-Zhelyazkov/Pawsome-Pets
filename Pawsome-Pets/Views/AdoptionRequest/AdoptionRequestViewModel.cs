@@ -2,7 +2,7 @@
 {
 	public class AdoptionRequestViewModel
 	{
-		public int RequestId { get; set; }
+		public int Id { get; set; }
 
 		public string FullName { get; set; }
 
@@ -18,6 +18,6 @@
 
 		public string Status { get; set; }
 
-		public DateTime CreatedOn { get; set; }
+		public DateTime SubmittedOn{ get; set; }
 	}
 }

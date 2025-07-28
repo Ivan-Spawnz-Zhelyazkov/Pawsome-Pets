@@ -5,17 +5,28 @@ namespace Pawsome_Pets.Models
 	public class AdoptionRequest
 	{
 		public int Id { get; set; }
+
 		public int AnimalId { get; set; }
-		public Animal Animal { get; set; } = null!;
+		public Animal Animal { get; set; }
+
+		public string AdopterId { get; set; }
+		public ApplicationUser Adopter { get; set; }
 
 		[Required]
-		
-		public string AdopterId { get; set; } = null!;
-		public ApplicationUser Adopter { get; set; } = null!;
-		public RequestStatus Status { get; set; } = RequestStatus.Pending;
+		public string FullName { get; set; }
 
-		public DateTime RequestedOn { get; set; } = DateTime.UtcNow;
-		public bool IsApproved { get; set; }
+		[Required]
+		[EmailAddress]
+		public string Email { get; set; }
+
+		[Required]
+		public string PhoneNumber { get; set; }
+
+		public string? Message { get; set; }
+
+		public string Status { get; set; } = "Pending";
+
+		public DateTime CreatedOn { get; set; }
 	}
 	public enum RequestStatus
 	{
@@ -23,4 +34,5 @@ namespace Pawsome_Pets.Models
 		Approved,
 		Declined
 	}
+
 }

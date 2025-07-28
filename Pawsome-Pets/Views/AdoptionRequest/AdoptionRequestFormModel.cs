@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Pawsome_Pets.Models;
 
 namespace Pawsome_Pets.Views.Adoption
 {

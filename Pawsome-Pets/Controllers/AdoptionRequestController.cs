@@ -33,7 +33,7 @@ namespace Pawsome_Pets.Controllers
 				Email = user.Email,
 				PhoneNumber = user.PhoneNumber
 			};
-			return View(model);
+			return View( model);
 		}
 
 
@@ -54,8 +54,10 @@ namespace Pawsome_Pets.Controllers
 		[HttpGet]
 		public async Task<IActionResult> MyRequests()
 		{
-			ApplicationUser user = await userManager.GetUserAsync(User);
-			IEnumerable<AdoptionRequestFormModel> requests = await adoptionRequestService.GetRequestsByUserIdAsync(user.Id);
+			string userId = userManager.GetUserId(User);
+
+			IEnumerable<AdoptionRequestViewModel> requests = await adoptionRequestService.GetRequestsByUserIdAsync(userId);
+
 			return View(requests);
 		}
 	}

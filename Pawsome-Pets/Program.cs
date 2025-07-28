@@ -34,6 +34,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddSession();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAdoptionRequestService, AdoptionRequestService>();
 
 
 var app = builder.Build();
