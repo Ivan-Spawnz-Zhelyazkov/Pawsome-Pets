@@ -49,7 +49,7 @@ namespace Pawsome_Pets.Controllers
 
 			await adoptionRequestService.CreateRequestAsync(model, user.Id);
 
-			return RedirectToAction("MyRequests","Account");
+			return RedirectToAction("MyRequests","AdoptionRequest");
 		}
 		[HttpGet]
 		public async Task<IActionResult> MyRequests()
@@ -58,7 +58,7 @@ namespace Pawsome_Pets.Controllers
 
 			IEnumerable<AdoptionRequestViewModel> requests = await adoptionRequestService.GetRequestsByUserIdAsync(userId);
 
-			return View(requests);
+			return View("MyRequests", requests);
 		}
 	}
 }
