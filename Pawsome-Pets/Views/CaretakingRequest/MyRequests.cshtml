@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Pawsome_Pets.Views.CaretakingRequest.CaretakingRequestViewModel>
+
+@{
+    ViewData["Title"] = "My Caretaking Requests";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>You have not submitted any caretaking requests yet.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Animal</th>
+                <th>Image</th>
+                <th>Status</th>
+                <th>Submitted On</th>
+                <th>Duration (months)</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var request in Model)
+        {
+            <tr>
+                <td>@request.AnimalName</td>
+                <td><img src="@request.AnimalImageUrl" alt="@request.AnimalName" width="100" /></td>
+                <td>@request.Status</td>
+                <td>@request.SubmittedOn.ToString("yyyy-MM-dd")</td>
+                <td>@request.Duration</td>
+                <td>@request.Message</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,82 @@
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
+using Pawsome_Pets.Data;
+using Pawsome_Pets.Models;
+using Pawsome_Pets.Services.Contracts;
+using Pawsome_Pets.Views.CaretakingRequest;
+
+namespace Pawsome_Pets.Services.Core
+{
+	public class CaretakingRequestService : ICaretakingRequestService
+	{
+		private readonly PawsomeDbContext dbContext;
+
+		public CaretakingRequestService(PawsomeDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+		public async Task CreateRequestAsync(CaretakingRequestFormModel model, string userId)
+		{
+			CaretakingRequest request = new CaretakingRequest
+			{
+				AnimalId = model.AnimalId,
+				CaretakerId = userId,
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Email = model.Email,
+				PhoneNumber = model.PhoneNumber,
+				Message = model.Message,
+				DurationMonths = model.CaretakingDuration,
+				StartDate = DateTime.UtcNow,
+				IsApprovedForCaretaking = false
+			};
+
+			dbContext.CaretakingRequests.Add(request);
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<IEnumerable<CaretakingRequestViewModel>> GetRequestByUserIdAsync(string userId)
+		{
+			return await dbContext.CaretakingRequests
+				.Where(r => r.CaretakerId == userId)
+				.Include(r => r.Animal)
+				.Select(r => new CaretakingRequestViewModel
+				{
+					RequestId = r.Id,
+					AnimalId = r.AnimalId,
+					AnimalName = r.Animal.Name,
+					AnimalImageUrl = r.Animal.ImageUrl,
+					Status = r.IsApprovedForCaretaking ? "Approved" : "Pending",
+					SubmittedOn = r.StartDate,
+					Duration = r.DurationMonths
+				})
+				.ToListAsync();
+		}
+
+		public async Task ApproveRequestAsync(int requestId)
+		{
+			CaretakingRequest? request = await dbContext.CaretakingRequests
+				.Include(r => r.Animal)
+				.FirstOrDefaultAsync(r => r.Id == requestId);
+
+			if (request != null)
+			{
+				request.IsApprovedForCaretaking = true;
+				await dbContext.SaveChangesAsync();
+			}
+		}
+
+		public async Task DeclineRequestAsync(int requestId)
+		{
+			CaretakingRequest? request = await dbContext.CaretakingRequests
+				.FirstOrDefaultAsync(r => r.Id == requestId);
+
+			if (request != null)
+			{
+				dbContext.CaretakingRequests.Remove(request);
+				await dbContext.SaveChangesAsync();
+			}
+		}
+	}
+}

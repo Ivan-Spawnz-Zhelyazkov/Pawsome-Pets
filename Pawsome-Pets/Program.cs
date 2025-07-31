@@ -35,6 +35,7 @@ builder.Services.AddSession();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAdoptionRequestService, AdoptionRequestService>();
+builder.Services.AddScoped<ICaretakingRequestService, CaretakingRequestService>();
 
 
 var app = builder.Build();
