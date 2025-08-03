@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pawsome_Pets.Views.Accounts
+namespace Pawsome_Pets.Views.Account
 {
 	public class RegisterViewModel2	
 	{

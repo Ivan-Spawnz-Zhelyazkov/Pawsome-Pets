@@ -7,5 +7,7 @@ namespace Pawsome_Pets.Services.Contracts
 		Task CreateRequestAsync(AdoptionRequestFormModel model, string userId);
 
 		Task<IEnumerable<AdoptionRequestViewModel>> GetRequestsByUserIdAsync(string userId);
+
+		Task<IEnumerable<AdoptionRequestViewModel>> GetRequestsToGiverAnimalsAsync(string giverId);
 	}
 }

@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
 using Pawsome_Pets.Views.Adoption;
 
 namespace Pawsome_Pets.Controllers
 {
-	[Authorize(Roles = "Adopter")]
+	
 	public class AdoptionRequestController : Controller
 	{
 
@@ -23,7 +22,9 @@ namespace Pawsome_Pets.Controllers
 			this.userManager = userManager;
 		}
 		[HttpGet]
-		public async Task<IActionResult> Create (int animalId)
+		[Authorize(Roles = "Admin,Adopter")]
+		public async Task<IActionResult> Create(int animalId)
+
 		{
 			ApplicationUser user = await userManager.GetUserAsync(User);
 			AdoptionRequestFormModel model = new AdoptionRequestFormModel
@@ -33,15 +34,16 @@ namespace Pawsome_Pets.Controllers
 				Email = user.Email,
 				PhoneNumber = user.PhoneNumber
 			};
-			return View( model);
+			return View(model);
 		}
 
 
 		[HttpPost]
+		[Authorize(Roles = "Admin,Adopter")]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create (AdoptionRequestFormModel model)
+		public async Task<IActionResult> Create(AdoptionRequestFormModel model)
 		{
-			if(!ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
 				return View(model);
 			}
@@ -49,16 +51,31 @@ namespace Pawsome_Pets.Controllers
 
 			await adoptionRequestService.CreateRequestAsync(model, user.Id);
 
-			return RedirectToAction("MyRequests","AdoptionRequest");
+			return RedirectToAction("MyRequests", "AdoptionRequest");
 		}
 		[HttpGet]
+		[Authorize(Roles = "Admin,Adopter")]
 		public async Task<IActionResult> MyRequests()
 		{
 			string userId = userManager.GetUserId(User);
 
-			IEnumerable<AdoptionRequestViewModel> requests = await adoptionRequestService.GetRequestsByUserIdAsync(userId);
+			IEnumerable<AdoptionRequestViewModel> requests = await adoptionRequestService
+				.GetRequestsByUserIdAsync(userId);
 
 			return View("MyRequests", requests);
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "Giver")]
+		public async Task<IActionResult> RequestsToMyAnimals()
+		{
+			ApplicationUser user = await userManager.GetUserAsync(User);
+			string giverId = user.Id;
+
+			IEnumerable<AdoptionRequestViewModel> requests = await adoptionRequestService
+				.GetRequestsToGiverAnimalsAsync(giverId);
+
+			return View("RequestsToMyAnimals", requests);
 		}
 	}
 }

@@ -1,0 +1,28 @@
+﻿@model Pawsome_Pets.Views.Profile.ProfileViewModel
+
+<h2>My Profile</h2>
+
+<form asp-action="Update" method="post">
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Username"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Update Profile</button>
+</form>
+
+<hr />
+<a asp-controller="Profile" asp-action="MyRequests" class="btn btn-outline-primary mt-4">My Requests</a>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

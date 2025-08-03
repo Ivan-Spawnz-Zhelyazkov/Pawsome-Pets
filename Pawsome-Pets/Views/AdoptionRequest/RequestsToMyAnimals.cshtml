@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Pawsome_Pets.Views.Adoption.AdoptionRequestViewModel>
+
+<h2>Adoption Requests to My Animals</h2>
+
+@if (!Model.Any())
+{
+    <p>No requests received yet.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Animal</th>
+                <th>Adopter</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model)
+            {
+                <tr>
+                    <td>@request.AnimalName</td>
+                    <td>@request.FullName</td>
+                    <td>@request.Email</td>
+                    <td>@request.PhoneNumber</td>
+                    <td>@request.Message</td>
+                    <td class="@(request.Status == "Accepted" ? "text-success" : request.Status == "Declined" ? "text-danger" : "")">
+                        @request.Status
+                    </td>
+                    <td>
+                        @if (request.Status == "Pending")
+                        {
+                            <form asp-action="Approve" asp-route-id="@request.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form asp-action="Decline" asp-route-id="@request.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

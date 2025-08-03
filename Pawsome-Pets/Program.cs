@@ -36,6 +36,7 @@ builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAdoptionRequestService, AdoptionRequestService>();
 builder.Services.AddScoped<ICaretakingRequestService, CaretakingRequestService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 
 var app = builder.Build();
