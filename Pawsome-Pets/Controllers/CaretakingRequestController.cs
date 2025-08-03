@@ -64,7 +64,7 @@ namespace Pawsome_Pets.Controllers
 
 		// Giver -> Requests to my animals for caretaking
 		[HttpGet]
-		[Authorize(Roles = "Giver")]
+		[Authorize(Roles = "Giver, Admin")]
 		public async Task<IActionResult> RequestsToMyAnimals()
 		{
 			ApplicationUser user = await userManager.GetUserAsync(User);
@@ -74,6 +74,18 @@ namespace Pawsome_Pets.Controllers
 				.GetRequestsToGiverAnimalsAsync(giverId);
 
 			return View("RequestsToMyAnimals", requests);
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "Giver, Admin")]
+		public async Task<IActionResult> Details(int id)
+		{
+			CaretakingRequestViewModel request = await caretakingRequestService.GetRequestByIdAsync(id);
+			if (request == null)
+			{
+				return NotFound();
+			}
+			return View(request);
 		}
 	}
 

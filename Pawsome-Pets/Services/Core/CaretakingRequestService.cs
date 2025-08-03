@@ -101,5 +101,33 @@ namespace Pawsome_Pets.Services.Core
 				})
 				.ToListAsync();
 		}
+		public async Task<CaretakingRequestViewModel?> GetRequestByIdAsync(int id)
+		{
+			CaretakingRequest? request = await dbContext.CaretakingRequests
+				.Include(r => r.Animal)
+				.FirstOrDefaultAsync(r => r.Id == id);
+
+			if (request == null)
+			{
+				return null;
+			}
+
+			return new CaretakingRequestViewModel
+			{
+				RequestId = request.Id,
+				AnimalId = request.AnimalId,
+				AnimalName = request.Animal.Name,
+				AnimalImageUrl = request.Animal.ImageUrl,
+				Status = request.IsApprovedForCaretaking ? "Approved" : "Pending",
+				SubmittedOn = request.StartDate,
+				Duration = request.DurationMonths,
+				Message = request.Message,
+				FirstName = request.FirstName,
+				LastName = request.LastName,
+				Email = request.Email,
+				PhoneNumber = request.PhoneNumber
+			};
+		}
+
 	}
 }

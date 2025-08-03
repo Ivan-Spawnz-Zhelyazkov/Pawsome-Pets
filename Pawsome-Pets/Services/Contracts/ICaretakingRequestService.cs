@@ -11,6 +11,7 @@ namespace Pawsome_Pets.Services.Contracts
 		Task DeclineRequestAsync(int requestId);
 
 		Task<IEnumerable<CaretakingRequestViewModel>> GetRequestsToGiverAnimalsAsync(string giverId);
+		Task<CaretakingRequestViewModel?> GetRequestByIdAsync(int id);
 
 	}
 }
