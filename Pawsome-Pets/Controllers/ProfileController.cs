@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
 using Pawsome_Pets.Services.Core;
+using Pawsome_Pets.Views.Adoption;
+using Pawsome_Pets.Views.CaretakingRequest;
 using Pawsome_Pets.Views.Profile;
 
 
@@ -12,13 +15,20 @@ namespace Pawsome_Pets.Controllers
 	{
 		private readonly UserManager<ApplicationUser> userManager;
 		private readonly IProfileService profileService;
+		private readonly IAdoptionRequestService adoptionRequestService;
+		private readonly ICaretakingRequestService caretakingRequestService;
 
 
 
-		public ProfileController(UserManager<ApplicationUser> userManager, IProfileService profileService)
+		public ProfileController(UserManager<ApplicationUser> userManager,
+			IProfileService profileService,
+			IAdoptionRequestService adoptionRequestService,
+			ICaretakingRequestService caretakingRequestService)
 		{
 			this.userManager = userManager;
 			this.profileService = profileService;
+			this.adoptionRequestService = adoptionRequestService;
+			this.caretakingRequestService = caretakingRequestService;
 		}
 
 		[HttpGet]
@@ -75,6 +85,25 @@ namespace Pawsome_Pets.Controllers
 			}
 
 			return RedirectToAction("Index");
+		}
+		[Authorize(Roles = "Giver")]
+		public async Task<IActionResult> RequestsToMyAnimals()
+		{
+			string userId = userManager.GetUserId(User);
+
+			IEnumerable<AdoptionRequestViewModel> adoptionRequests =
+				await adoptionRequestService.GetRequestsToGiverAnimalsAsync(userId);
+
+			IEnumerable<CaretakingRequestViewModel> caretakingRequests =
+				await caretakingRequestService.GetRequestsToGiverAnimalsAsync(userId);
+
+			CombinedRequestsViewModel model = new CombinedRequestsViewModel
+			{
+				AdoptionRequests = adoptionRequests,
+				CaretakingRequests = caretakingRequests
+			};
+
+			return View("CombinedRequests", model);
 		}
 
 	}

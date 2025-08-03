@@ -72,5 +72,25 @@ namespace Pawsome_Pets.Services.Core
 				})
 				.ToListAsync();
 		}
+		public async Task<AdoptionRequestViewModel> GetRequestByIdAsync(int id)
+		{
+			return await this.dbContext.AdoptionRequests
+				.Where(r => r.Id == id)
+				.Select(r => new AdoptionRequestViewModel
+				{
+					Id = r.Id,
+					FullName = r.FullName,
+					Email = r.Email,
+					PhoneNumber = r.PhoneNumber,
+					Message = r.Message,
+					Status = r.Status,
+					AnimalName = r.Animal.Name,
+					AnimalImageUrl = r.Animal.ImageUrl,
+					AnimalAge = r.Animal.Age,
+					AnimalDescription = r.Animal.Description,
+					GiverId = r.Animal.GiverId
+				})
+				.FirstOrDefaultAsync();
+		}
 	}
 }

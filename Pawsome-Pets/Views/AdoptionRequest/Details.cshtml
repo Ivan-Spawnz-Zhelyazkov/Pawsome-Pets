@@ -1,0 +1,45 @@
+﻿@model Pawsome_Pets.Views.Adoption.AdoptionRequestViewModel
+
+@{
+    ViewData["Title"] = "Adoption Request Details";
+}
+
+<h2>Adoption Request Details</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <img src="@Model.AnimalImageUrl" alt="Animal Image"
+             class="img-thumbnail" style="width:100%; max-width:300px; height:auto;" />
+    </div>
+    <div class="col-md-8">
+        <h4>@Model.AnimalName</h4>
+        <p><strong>Age:</strong> @Model.AnimalAge</p>
+        <p><strong>Description:</strong> @Model.AnimalDescription</p>
+        <p>
+            <strong>Status:</strong>
+            <span class="@(Model.Status == "Accepted" ? "text-success" : Model.Status == "Declined" ? "text-danger" : "")">
+                @Model.Status
+            </span>
+        </p>
+
+        <hr />
+
+        <h5>Adopter Information</h5>
+        <p><strong>Name:</strong> @Model.FullName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+        <p><strong>Message:</strong> @Model.Message</p>
+
+        @if (Model.Status == "Pending")
+        {
+            <form asp-action="Approve" asp-route-id="@Model.Id" method="post" class="d-inline">
+                <button type="submit" class="btn btn-success">Accept</button>
+            </form>
+            <form asp-action="Decline" asp-route-id="@Model.Id" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger">Decline</button>
+            </form>
+        }
+    </div>
+</div>
+
+<a asp-action="RequestsToMyAnimals" class="btn btn-secondary mt-3">Back to My Requests</a>

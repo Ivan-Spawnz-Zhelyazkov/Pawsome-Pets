@@ -20,6 +20,10 @@ namespace Pawsome_Pets.Controllers
 		{
 			this.adoptionRequestService = adoptionRequestService;
 			this.userManager = userManager;
+
+
+
+			//Adoption Request creation
 		}
 		[HttpGet]
 		[Authorize(Roles = "Admin,Adopter")]
@@ -65,6 +69,9 @@ namespace Pawsome_Pets.Controllers
 			return View("MyRequests", requests);
 		}
 
+
+		// Giver -> My Requests -> Accept/Decline Requests
+
 		[HttpGet]
 		[Authorize(Roles = "Giver")]
 		public async Task<IActionResult> RequestsToMyAnimals()
@@ -76,6 +83,29 @@ namespace Pawsome_Pets.Controllers
 				.GetRequestsToGiverAnimalsAsync(giverId);
 
 			return View("RequestsToMyAnimals", requests);
+		}
+
+		// Giver -> My Requests -> Details of a specific request
+		[HttpGet]
+		[Authorize(Roles = "Giver")]
+		public async Task<IActionResult> Details(int id)
+		{
+			AdoptionRequestViewModel? request = await adoptionRequestService.GetRequestByIdAsync(id);
+
+			if (request == null)
+			{
+				return NotFound();
+			}
+
+			ApplicationUser user = await userManager.GetUserAsync(User);
+			string currentUserId = user.Id;
+
+			if (request.GiverId != currentUserId)
+			{
+				return Forbid();
+			}
+
+			return View(request);
 		}
 	}
 }

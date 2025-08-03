@@ -24,7 +24,13 @@ else
             @foreach (var request in Model)
             {
                 <tr>
-                    <td>@request.AnimalName</td>
+                    <td>
+                        <a asp-controller="AdoptionRequest" asp-action="Details" asp-route-id="@request.Id">
+                            <img src="@request.AnimalImageUrl" alt="@request.AnimalName" style="width: 100px; height: auto; object-fit: cover;" />
+                            <br />
+                            @request.AnimalName
+                        </a>
+                    </td>
                     <td>@request.FullName</td>
                     <td>@request.Email</td>
                     <td>@request.PhoneNumber</td>

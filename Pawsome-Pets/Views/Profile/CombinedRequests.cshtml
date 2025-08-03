@@ -1,0 +1,70 @@
+﻿@model Pawsome_Pets.Views.Profile.CombinedRequestsViewModel
+
+<h2 class="mb-4">Requests to My Animals</h2>
+
+@if (!Model.AdoptionRequests.Any() && !Model.CaretakingRequests.Any())
+{
+    <p>No requests available.</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Adoption Requests</h4>
+            @foreach (var request in Model.AdoptionRequests)
+            {
+                <div class="card mb-3 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <a asp-controller="AdoptionRequest" asp-action="Details" asp-route-id="@request.Id">
+                                <img src="@request.AnimalImageUrl" class="img-fluid rounded-start" alt="@request.AnimalName" />
+                            </a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">@request.AnimalName</h5>
+                                <p>Status: <span class="text-@GetStatusColor(request.Status)">@request.Status</span></p>
+                                <p>Submitted: @request.SubmittedOn.ToShortDateString()</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <h4>Caretaking Requests</h4>
+            @foreach (var request in Model.CaretakingRequests)
+            {
+                <div class="card mb-3 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <a asp-controller="CaretakingRequest" asp-action="Details" asp-route-id="@request.RequestId">
+                                <img src="@request.AnimalImageUrl" class="img-fluid rounded-start" alt="@request.AnimalName" />
+                            </a>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">@request.AnimalName</h5>
+                                <p>Status: <span class="text-@GetStatusColor(request.Status)">@request.Status</span></p>
+                                <p>Submitted: @request.SubmittedOn.ToShortDateString()</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@functions {
+    private string GetStatusColor(string status)
+    {
+        return status switch
+        {
+            "Approved" => "success",
+            "Declined" => "danger",
+            _ => "secondary"
+        };
+    }
+}

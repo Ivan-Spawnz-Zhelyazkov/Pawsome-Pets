@@ -4,6 +4,14 @@
 	{
 		public int RequestId { get; set; }
 
+		public string FirstName { get; set; }
+		
+		public string LastName { get; set; }
+
+		public string Email { get; set; }
+
+		public string PhoneNumber { get; set; }
+
 		public int AnimalId { get; set; }
 
 		public string AnimalName { get; set; }

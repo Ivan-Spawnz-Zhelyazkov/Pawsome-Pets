@@ -1,0 +1,32 @@
+﻿@model Pawsome_Pets.Views.CaretakingRequest.CaretakingRequestViewModel
+
+<h2>Request Details</h2>
+
+<div class="card mb-3">
+    <img src="@Model.AnimalImageUrl" class="card-img-top" style="height: 350px; object-fit: cover;" />
+    <div class="card-body">
+        <h4 class="card-title">@Model.AnimalName</h4>
+        <p>
+            <strong>Status:</strong>
+            <span class="@(Model.Status == "Approved" ? "text-success" : "text-warning")">@Model.Status</span>
+        </p>
+        <p><strong>Duration:</strong> @Model.Duration months</p>
+        <p><strong>Submitted On:</strong> @Model.SubmittedOn.ToShortDateString()</p>
+        <hr />
+        <h5>Caregiver Info</h5>
+        <p><strong>Name:</strong> @Model.FirstName @Model.LastName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+        <p><strong>Message:</strong> @Model.Message</p>
+
+        @if (Model.Status == "Pending")
+        {
+            <form asp-action="Approve" asp-route-id="@Model.RequestId" method="post" class="d-inline">
+                <button class="btn btn-success">Approve</button>
+            </form>
+            <form asp-action="Decline" asp-route-id="@Model.RequestId" method="post" class="d-inline">
+                <button class="btn btn-danger">Decline</button>
+            </form>
+        }
+    </div>
+</div>

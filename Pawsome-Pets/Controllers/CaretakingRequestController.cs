@@ -7,7 +7,7 @@ using Pawsome_Pets.Views.CaretakingRequest;
 
 namespace Pawsome_Pets.Controllers
 {
-	[Authorize(Roles = "Caretaker")]
+	
 	public class CaretakingRequestController : Controller
 	{
 		private readonly ICaretakingRequestService caretakingRequestService;
@@ -22,7 +22,9 @@ namespace Pawsome_Pets.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "Caretaker")]
 		public async Task <IActionResult> Create (int animalId)
+
 		{
 			ApplicationUser user = await userManager.GetUserAsync(User);
 			CaretakingRequestFormModel model = new CaretakingRequestFormModel
@@ -37,6 +39,7 @@ namespace Pawsome_Pets.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "Caretaker")]
 		[ValidateAntiForgeryToken]
 		public async Task <IActionResult> Create(CaretakingRequestFormModel model)
 		{
@@ -49,6 +52,7 @@ namespace Pawsome_Pets.Controllers
 			return RedirectToAction("MyRequests", "CaretakingRequest");
 		}
 		[HttpGet]
+		[Authorize(Roles = "Caretaker")]
 		public async Task<IActionResult> MyRequests()
 		{
 			string userId = userManager.GetUserId(User);
@@ -57,5 +61,20 @@ namespace Pawsome_Pets.Controllers
 
 			return View("MyRequests", requests);
 		}
+
+		// Giver -> Requests to my animals for caretaking
+		[HttpGet]
+		[Authorize(Roles = "Giver")]
+		public async Task<IActionResult> RequestsToMyAnimals()
+		{
+			ApplicationUser user = await userManager.GetUserAsync(User);
+			string giverId = user.Id;
+
+			IEnumerable<CaretakingRequestViewModel> requests = await caretakingRequestService
+				.GetRequestsToGiverAnimalsAsync(giverId);
+
+			return View("RequestsToMyAnimals", requests);
+		}
 	}
+
 }

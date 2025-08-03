@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Pawsome_Pets.Views.CaretakingRequest.CaretakingRequestViewModel>
+
+<h2>Caretaking Requests to My Animals</h2>
+
+@if (!Model.Any())
+{
+    <p>No caretaking requests received yet.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var request in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@request.AnimalImageUrl" class="card-img-top" style="height: 250px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@request.AnimalName</h5>
+                        <p class="card-text">
+                            <strong>Status:</strong>
+                            <span class="@(request.Status == "Approved" ? "text-success" : "text-warning")">
+                                @request.Status
+                            </span>
+                        </p>
+                        <a asp-action="Details" asp-route-id="@request.RequestId" class="btn btn-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
