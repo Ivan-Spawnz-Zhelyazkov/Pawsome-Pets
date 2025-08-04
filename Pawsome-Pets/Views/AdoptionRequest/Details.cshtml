@@ -17,7 +17,7 @@
         <p><strong>Description:</strong> @Model.AnimalDescription</p>
         <p>
             <strong>Status:</strong>
-            <span class="@(Model.Status == "Accepted" ? "text-success" : Model.Status == "Declined" ? "text-danger" : "")">
+            <span class="@(Model.Status == "Accepted" ? "text-success" : Model.Status == "Declined" ? "text-danger" : "text-warning")">
                 @Model.Status
             </span>
         </p>
@@ -42,4 +42,4 @@
     </div>
 </div>
 
-<a asp-action="RequestsToMyAnimals" class="btn btn-secondary mt-3">Back to My Requests</a>
+<a asp-controller="Profile" asp-action="RequestsToMyAnimals" class="btn btn-secondary mt-3">Back to My Requests</a>

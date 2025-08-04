@@ -1,4 +1,11 @@
 ﻿@model Pawsome_Pets.Views.Profile.ProfileViewModel
+@using Microsoft.AspNetCore.Identity
+@using Pawsome_Pets.Models
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(user);
+}
 
 <h2>My Profile</h2>
 
@@ -19,11 +26,32 @@
 </form>
 
 <hr />
-<a asp-controller="Profile" asp-action="RequestsToMyAnimals" class="btn btn-primary">
-    View All Requests to My Animals
-</a>
 
 
+<div class="mt-4">
+    @if (roles.Contains("Giver"))
+    {
+        <a asp-controller="Profile" asp-action="RequestsToMyAnimals" class="btn btn-primary">
+            View All Requests to My Animals
+        </a>
+    }
+    else if (roles.Contains("Adopter"))
+    {
+        <a asp-controller="AdoptionRequest" asp-action="MyRequests" class="btn btn-primary">
+            View My Adoption Requests
+        </a>
+    }
+    else if (roles.Contains("Caretaker"))
+    {
+        <a asp-controller="CaretakingRequest" asp-action="MyRequests" class="btn btn-primary">
+            View My Caretaking Requests
+        </a>
+    }
+    else if (roles.Contains("Admin"))
+    {
+        <a asp-action="AdminPanel" asp-controller="Profile" class="btn btn-danger mt-3">Admin Panel</a>
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

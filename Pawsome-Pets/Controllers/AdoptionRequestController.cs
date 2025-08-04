@@ -107,5 +107,23 @@ namespace Pawsome_Pets.Controllers
 
 			return View(request);
 		}
+
+		[HttpPost]
+		[Authorize(Roles = "Giver")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Approve(int id)
+		{
+			await adoptionRequestService.ApproveRequestAsync(id);
+			return RedirectToAction("RequestsToMyAnimals", "AdoptionRequest");
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "Giver")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Decline(int id)
+		{
+			await adoptionRequestService.DeclineRequestAsync(id);
+			return RedirectToAction("RequestsToMyAnimals", "AdoptionRequest");
+		}
 	}
 }

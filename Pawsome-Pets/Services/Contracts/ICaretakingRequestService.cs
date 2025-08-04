@@ -1,4 +1,5 @@
-﻿using Pawsome_Pets.Views.CaretakingRequest;
+﻿using Pawsome_Pets.Models;
+using Pawsome_Pets.Views.CaretakingRequest;
 using System.Threading.Tasks;
 
 namespace Pawsome_Pets.Services.Contracts
@@ -12,6 +13,10 @@ namespace Pawsome_Pets.Services.Contracts
 
 		Task<IEnumerable<CaretakingRequestViewModel>> GetRequestsToGiverAnimalsAsync(string giverId);
 		Task<CaretakingRequestViewModel?> GetRequestByIdAsync(int id);
+
+
+		//For Admins to view all requests
+		Task<IEnumerable<CaretakingRequestViewModel>> GetAllAsync();
 
 	}
 }

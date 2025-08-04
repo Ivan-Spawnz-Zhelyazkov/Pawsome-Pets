@@ -1,6 +1,10 @@
 ﻿@model Pawsome_Pets.Views.CaretakingRequest.CaretakingRequestViewModel
 
-<h2>Request Details</h2>
+@{
+    ViewData["Title"] = "Caretaking Request Details";
+}
+
+<h2>Caretaking Request Details</h2>
 
 <div class="card mb-3">
     <img src="@Model.AnimalImageUrl" class="card-img-top" style="height: 350px; object-fit: cover;" />
@@ -8,7 +12,7 @@
         <h4 class="card-title">@Model.AnimalName</h4>
         <p>
             <strong>Status:</strong>
-            <span class="@(Model.Status == "Approved" ? "text-success" : "text-warning")">@Model.Status</span>
+            <span class="@(Model.Status == "Approved" ? "text-success" : Model.Status == "Declined" ? "text-danger" : "text-warning")">@Model.Status</span>
         </p>
         <p><strong>Duration:</strong> @Model.Duration months</p>
         <p><strong>Submitted On:</strong> @Model.SubmittedOn.ToShortDateString()</p>
@@ -30,3 +34,5 @@
         }
     </div>
 </div>
+
+<a asp-controller="Profile" asp-action="RequestsToMyAnimals" class="btn btn-secondary mt-3">Back to My Requests</a>

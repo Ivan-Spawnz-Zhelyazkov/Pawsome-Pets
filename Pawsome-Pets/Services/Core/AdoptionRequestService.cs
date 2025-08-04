@@ -92,5 +92,57 @@ namespace Pawsome_Pets.Services.Core
 				})
 				.FirstOrDefaultAsync();
 		}
+		public async Task ApproveRequestAsync(int requestId)
+		{
+			AdoptionRequest? request = await dbContext.AdoptionRequests
+				.Include(r => r.Animal)
+				.FirstOrDefaultAsync(r => r.Id == requestId);
+
+			if (request == null)
+			{
+				throw new ArgumentException("Request not found.");
+			}
+
+			request.Status = "Accepted";
+			request.Animal.IsAdopted = true;
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task DeclineRequestAsync(int requestId)
+		{
+			AdoptionRequest? request = await dbContext.AdoptionRequests
+				.FirstOrDefaultAsync(r => r.Id == requestId);
+
+			if (request == null)
+			{
+				throw new ArgumentException("Request not found.");
+			}
+
+			request.Status = "Declined";
+			await dbContext.SaveChangesAsync();
+		}
+
+
+		// For Admins to view all requests
+		public async Task<IEnumerable<AdoptionRequestViewModel>> GetAllAsync()
+		{
+			return await dbContext.AdoptionRequests
+				.Include(r => r.Animal)
+				.Select(r => new AdoptionRequestViewModel
+				{
+					Id = r.Id,
+					FullName = r.FullName,
+					Email = r.Email,
+					PhoneNumber = r.PhoneNumber,
+					Message = r.Message,
+					Status = r.Status,
+					AnimalName = r.Animal.Name,
+					AnimalImageUrl = r.Animal.ImageUrl,
+					SubmittedOn = r.CreatedOn
+				})
+				.ToListAsync();
+		}
+
 	}
 }

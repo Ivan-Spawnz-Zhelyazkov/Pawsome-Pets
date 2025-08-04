@@ -1,0 +1,40 @@
+﻿@model Pawsome_Pets.Views.Profile.AdminPanelViewModel
+
+<h2>Admin Panel</h2>
+
+<form method="get" class="row mb-4">
+    <div class="col-md-3">
+        <label>Adoption Status</label>
+        <select name="adoptionStatus" class="form-control">
+            <option value="All">All</option>
+            <option value="Pending" selected="@(Model.AdoptionFilterStatus == "Pending")">Pending</option>
+            <option value="Accepted" selected="@(Model.AdoptionFilterStatus == "Accepted")">Accepted</option>
+            <option value="Declined" selected="@(Model.AdoptionFilterStatus == "Declined")">Declined</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label>Caretaking Status</label>
+        <select name="caretakingStatus" class="form-control">
+            <option value="All">All</option>
+            <option value="Pending" selected="@(Model.CaretakingFilterStatus == "Pending")">Pending</option>
+            <option value="Accepted" selected="@(Model.CaretakingFilterStatus == "Accepted")">Accepted</option>
+            <option value="Declined" selected="@(Model.CaretakingFilterStatus == "Declined")">Declined</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <label>User Role</label>
+        <select name="role" class="form-control">
+            <option value="All">All</option>
+            <option value="Admin" selected="@(Model.UserRoleFilter == "Admin")">Admin</option>
+            <option value="Giver" selected="@(Model.UserRoleFilter == "Giver")">Giver</option>
+            <option value="Adopter" selected="@(Model.UserRoleFilter == "Adopter")">Adopter</option>
+            <option value="Caregiver" selected="@(Model.UserRoleFilter == "Caregiver")">Caregiver</option>
+        </select>
+    </div>
+
+    <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+    </div>
+</form>

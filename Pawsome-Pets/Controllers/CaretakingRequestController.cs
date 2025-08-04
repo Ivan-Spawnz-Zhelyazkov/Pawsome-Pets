@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
+using Pawsome_Pets.Services.Core;
 using Pawsome_Pets.Views.CaretakingRequest;
 
 namespace Pawsome_Pets.Controllers
 {
-	
+
 	public class CaretakingRequestController : Controller
 	{
 		private readonly ICaretakingRequestService caretakingRequestService;
@@ -23,7 +24,7 @@ namespace Pawsome_Pets.Controllers
 
 		[HttpGet]
 		[Authorize(Roles = "Caretaker")]
-		public async Task <IActionResult> Create (int animalId)
+		public async Task<IActionResult> Create(int animalId)
 
 		{
 			ApplicationUser user = await userManager.GetUserAsync(User);
@@ -41,7 +42,7 @@ namespace Pawsome_Pets.Controllers
 		[HttpPost]
 		[Authorize(Roles = "Caretaker")]
 		[ValidateAntiForgeryToken]
-		public async Task <IActionResult> Create(CaretakingRequestFormModel model)
+		public async Task<IActionResult> Create(CaretakingRequestFormModel model)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -87,6 +88,24 @@ namespace Pawsome_Pets.Controllers
 			}
 			return View(request);
 		}
-	}
+	
+	[HttpPost]
+		[Authorize(Roles = "Giver, Admin")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Approve(int id)
+		{
+			await caretakingRequestService.ApproveRequestAsync(id);
+			return RedirectToAction("RequestsToMyAnimals", "CaretakingRequest");
+		}
 
+		[HttpPost]
+		[Authorize(Roles = "Giver, Admin")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Decline(int id)
+		{
+			await caretakingRequestService.DeclineRequestAsync(id);
+			return RedirectToAction("RequestsToMyAnimals", "CaretakingRequest");
+		}
+
+	}
 }

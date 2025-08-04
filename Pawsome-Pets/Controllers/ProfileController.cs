@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Pawsome_Pets.Data;
 using Pawsome_Pets.Models;
 using Pawsome_Pets.Services.Contracts;
 using Pawsome_Pets.Services.Core;
@@ -17,6 +19,7 @@ namespace Pawsome_Pets.Controllers
 		private readonly IProfileService profileService;
 		private readonly IAdoptionRequestService adoptionRequestService;
 		private readonly ICaretakingRequestService caretakingRequestService;
+		private readonly PawsomeDbContext dbContext;
 
 
 
@@ -105,6 +108,68 @@ namespace Pawsome_Pets.Controllers
 
 			return View("CombinedRequests", model);
 		}
+
+
+		//Admin panel
+
+		[HttpGet]
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> AdminPanel(string adoptionStatus, string caretakingStatus, string role)
+		{
+			IEnumerable<AdoptionRequestViewModel> adoptionRequests = await adoptionRequestService.GetAllAsync();
+			IEnumerable<CaretakingRequestViewModel> caretakingRequests = await caretakingRequestService.GetAllAsync();
+
+			List<AdminUserViewModel> users = await userManager.Users
+				.Select(u => new AdminUserViewModel
+				{
+					FirstName = u.FirstName,
+					LastName = u.LastName,
+					UserName = u.UserName,
+					Email = u.Email,
+					PhoneNumber = u.PhoneNumber,
+				})
+				.ToListAsync();
+
+			foreach (var user in users)
+			{
+				ApplicationUser identityUser = await userManager.FindByNameAsync(user.UserName);
+				IList<string> roles = await userManager.GetRolesAsync(identityUser);
+				user.Roles = string.Join(", ", roles);
+			}
+
+			if (!string.IsNullOrEmpty(adoptionStatus) && adoptionStatus != "All")
+			{
+				adoptionRequests = adoptionRequests
+					.Where(r => r.Status != null && r.Status.Equals(adoptionStatus, StringComparison.OrdinalIgnoreCase));
+			}
+
+
+			if (!string.IsNullOrEmpty(caretakingStatus) && caretakingStatus != "All")
+			{
+				caretakingRequests = caretakingRequests
+					.Where(r => r.Status != null && r.Status.Equals(caretakingStatus, StringComparison.OrdinalIgnoreCase));
+			}
+
+			if (!string.IsNullOrEmpty(role) && role != "All")
+			{
+				users = users
+					.Where(u => !string.IsNullOrEmpty(u.Roles) && u.Roles.Contains(role, StringComparison.OrdinalIgnoreCase))
+					.ToList();
+			}
+
+			AdminPanelViewModel model = new AdminPanelViewModel
+			{
+				AdoptionRequests = adoptionRequests,
+				CaretakingRequests = caretakingRequests,
+				Users = users,
+				AdoptionFilterStatus = adoptionStatus,
+				CaretakingFilterStatus = caretakingStatus,
+				UserRoleFilter = role
+			};
+
+			return View(model);
+		}
+
 
 	}
 }

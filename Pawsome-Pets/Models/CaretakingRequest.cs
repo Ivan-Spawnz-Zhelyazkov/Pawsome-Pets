@@ -26,6 +26,8 @@ namespace Pawsome_Pets.Models
 		public string CaretakerId { get; set; } = null!;
 		public ApplicationUser Caretaker { get; set; } = null!;
 
+		public string Status { get; set; } = "Pending";
+
 		[Required]
 		[Range(1, 12, ErrorMessage = "Duration must be between 1 and 12 months.")]
 		public int DurationMonths { get; set; }

@@ -1,4 +1,5 @@
-﻿using Pawsome_Pets.Views.Adoption;
+﻿using Pawsome_Pets.Models;
+using Pawsome_Pets.Views.Adoption;
 
 namespace Pawsome_Pets.Services.Contracts
 {
@@ -11,5 +12,12 @@ namespace Pawsome_Pets.Services.Contracts
 		Task<IEnumerable<AdoptionRequestViewModel>> GetRequestsToGiverAnimalsAsync(string giverId);
 
 		Task<AdoptionRequestViewModel?> GetRequestByIdAsync(int id);
+
+		Task ApproveRequestAsync(int requestId);
+		Task DeclineRequestAsync(int requestId);
+
+
+		// For Admins to view all requests
+		Task<IEnumerable<AdoptionRequestViewModel>> GetAllAsync();
 	}
 }
