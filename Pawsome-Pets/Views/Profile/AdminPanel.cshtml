@@ -4,33 +4,35 @@
 
 <form method="get" class="row mb-4">
     <div class="col-md-3">
-        <label>Adoption Status</label>
-        <select name="adoptionStatus" class="form-control">
-            <option value="All">All</option>
-            <option value="Pending" selected="@(Model.AdoptionFilterStatus == "Pending")">Pending</option>
-            <option value="Accepted" selected="@(Model.AdoptionFilterStatus == "Accepted")">Accepted</option>
-            <option value="Declined" selected="@(Model.AdoptionFilterStatus == "Declined")">Declined</option>
+        <label for="adoptionStatus">Adoption Status</label>
+        <select name="adoptionStatus" id="adoptionStatus" class="form-control">
+            @foreach (var status in new[] { "All", "Pending", "Accepted", "Declined" })
+            {
+                var selected = Model.AdoptionFilterStatus == status ? "selected" : "";
+                <text><option value="@status" selected>@status</option></text>
+            }
         </select>
     </div>
 
     <div class="col-md-3">
-        <label>Caretaking Status</label>
-        <select name="caretakingStatus" class="form-control">
-            <option value="All">All</option>
-            <option value="Pending" selected="@(Model.CaretakingFilterStatus == "Pending")">Pending</option>
-            <option value="Accepted" selected="@(Model.CaretakingFilterStatus == "Accepted")">Accepted</option>
-            <option value="Declined" selected="@(Model.CaretakingFilterStatus == "Declined")">Declined</option>
+        <label for="caretakingStatus">Caretaking Status</label>
+        <select name="caretakingStatus" id="caretakingStatus" class="form-control">
+            @foreach (var status in new[] { "All", "Pending", "Approved", "Declined" })
+            {
+                var selected = Model.CaretakingFilterStatus == status ? "selected" : "";
+                <text><option value="@status" selected>@status</option></text>
+            }
         </select>
     </div>
 
     <div class="col-md-3">
-        <label>User Role</label>
-        <select name="role" class="form-control">
-            <option value="All">All</option>
-            <option value="Admin" selected="@(Model.UserRoleFilter == "Admin")">Admin</option>
-            <option value="Giver" selected="@(Model.UserRoleFilter == "Giver")">Giver</option>
-            <option value="Adopter" selected="@(Model.UserRoleFilter == "Adopter")">Adopter</option>
-            <option value="Caregiver" selected="@(Model.UserRoleFilter == "Caregiver")">Caregiver</option>
+        <label for="role">User Role</label>
+        <select name="role" id="role" class="form-control">
+            @foreach (var role in new[] { "All", "Admin", "Giver", "Adopter", "Caretaker" })
+            {
+                var selected = Model.UserRoleFilter == role ? "selected" : "";
+                <text><option value="@role" selected>@role</option></text>
+            }
         </select>
     </div>
 
@@ -38,3 +40,114 @@
         <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
     </div>
 </form>
+
+
+@if (Model.AdoptionRequests.Any())
+{
+    <h3>Adoption Requests</h3>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Animal</th>
+                <th>Requester</th>
+                <th>Status</th>
+                <th>Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model.AdoptionRequests)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="AdoptionRequest" asp-action="Details" asp-route-id="@request.Id">
+                            @request.AnimalName
+                        </a>
+                    </td>
+                    <td>@request.FullName</td>
+                    <td>
+                        <span class="@(request.Status == "Accepted" ? "text-success" : request.Status == "Declined" ? "text-danger" : "")">
+                            @request.Status
+                        </span>
+                    </td>
+                    <td>@request.SubmittedOn.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No adoption requests found.</p>
+}
+
+@if (Model.CaretakingRequests.Any())
+{
+    <h3>Caretaking Requests</h3>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Animal</th>
+                <th>Caregiver</th>
+                <th>Status</th>
+                <th>Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in Model.CaretakingRequests)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="CaretakingRequest" asp-action="Details" asp-route-id="@request.RequestId">
+                            @request.AnimalName
+                        </a>
+                    </td>
+                    <td>@request.FirstName @request.LastName</td>
+                    <td>
+                        <span class="@(request.Status == "Approved" ? "text-success" : request.Status == "Declined" ? "text-danger" : "")">
+                            @request.Status
+                        </span>
+                    </td>
+                    <td>@request.SubmittedOn.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No caretaking requests found.</p>
+}
+
+@if (Model.Users.Any())
+{
+    <h3>Users</h3>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@user.Id">
+                            @user.UserName
+                        </a>
+                    </td>
+                    <td>@user.Email</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@user.Roles</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No users found.</p>
+}

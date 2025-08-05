@@ -73,7 +73,7 @@ namespace Pawsome_Pets.Controllers
 		// Giver -> My Requests -> Accept/Decline Requests
 
 		[HttpGet]
-		[Authorize(Roles = "Giver")]
+		[Authorize(Roles = "Giver,Admin")]
 		public async Task<IActionResult> RequestsToMyAnimals()
 		{
 			ApplicationUser user = await userManager.GetUserAsync(User);
@@ -87,7 +87,7 @@ namespace Pawsome_Pets.Controllers
 
 		// Giver -> My Requests -> Details of a specific request
 		[HttpGet]
-		[Authorize(Roles = "Giver")]
+		[Authorize(Roles = "Giver,Admin")]
 		public async Task<IActionResult> Details(int id)
 		{
 			AdoptionRequestViewModel? request = await adoptionRequestService.GetRequestByIdAsync(id);
@@ -109,7 +109,7 @@ namespace Pawsome_Pets.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = "Giver")]
+		[Authorize(Roles = "Giver,Admin")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Approve(int id)
 		{
@@ -118,7 +118,7 @@ namespace Pawsome_Pets.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = "Giver")]
+		[Authorize(Roles = "Giver,Admin")]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Decline(int id)
 		{
