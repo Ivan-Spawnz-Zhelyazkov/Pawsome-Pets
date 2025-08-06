@@ -75,6 +75,8 @@ namespace Pawsome_Pets.Services.Core
 
 			if (request != null)
 			{
+				request.IsApprovedForCaretaking = false;
+				request.Status = "Declined";
 				dbContext.CaretakingRequests.Remove(request);
 				await dbContext.SaveChangesAsync();
 			}
