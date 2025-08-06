@@ -102,7 +102,6 @@ namespace Pawsome_Pets.Tests.Services
 		[Fact]
 		public async Task UpdateProfileAsync_ShouldReturnSuccess_WhenUpdateSucceeds()
 		{
-			// Arrange
 			var mockUserManager = new Mock<UserManager<ApplicationUser>>(
 				Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
 
@@ -132,10 +131,9 @@ namespace Pawsome_Pets.Tests.Services
 				Email = "new@example.com"
 			};
 
-			// Act
 			var result = await service.UpdateProfileAsync(user, model);
 
-			// Assert
+
 			Assert.True(result.Succeeded);
 			Assert.Equal("newuser", user.UserName);
 			Assert.Equal("new@example.com", user.Email);
