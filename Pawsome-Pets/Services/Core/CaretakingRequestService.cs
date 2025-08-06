@@ -119,6 +119,7 @@ namespace Pawsome_Pets.Services.Core
 			{
 				RequestId = request.Id,
 				AnimalId = request.AnimalId,
+				AnimalGiverId = request.Animal.GiverId,
 				AnimalName = request.Animal.Name,
 				AnimalImageUrl = request.Animal.ImageUrl,
 				Status = request.IsApprovedForCaretaking ? "Approved" : "Pending",

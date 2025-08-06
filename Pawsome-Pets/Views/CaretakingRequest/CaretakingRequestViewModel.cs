@@ -1,8 +1,12 @@
-﻿namespace Pawsome_Pets.Views.CaretakingRequest
+﻿using System.Composition.Convention;
+
+namespace Pawsome_Pets.Views.CaretakingRequest
 {
 	public class CaretakingRequestViewModel
 	{
 		public int RequestId { get; set; }
+
+		public string AnimalGiverId { get; set; }
 
 		public string FirstName { get; set; }
 		

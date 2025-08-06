@@ -86,6 +86,14 @@ namespace Pawsome_Pets.Controllers
 			{
 				return NotFound();
 			}
+			ApplicationUser user = await userManager.GetUserAsync(User);
+			string currentUserId = user?.Id;
+
+			if (!User.IsInRole("Admin") && request.AnimalGiverId != currentUserId)
+			{
+				return Forbid();
+			}
+
 			return View(request);
 		}
 	
