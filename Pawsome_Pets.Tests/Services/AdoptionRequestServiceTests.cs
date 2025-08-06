@@ -46,7 +46,6 @@ namespace Pawsome_Pets.Tests.Services
 		[Fact]
 		public async Task CreateRequestAsync_ShouldAddRequest()
 		{
-			// Arrange
 			var options = new DbContextOptionsBuilder<PawsomeDbContext>()
 				.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
 				.Options;
@@ -83,10 +82,8 @@ namespace Pawsome_Pets.Tests.Services
 
 			string testUserId = "user123";
 
-			// Act
 			await service.CreateRequestAsync(formModel, testUserId);
 
-			// Assert
 			var savedRequest = await context.AdoptionRequests.FirstOrDefaultAsync();
 
 			Assert.NotNull(savedRequest);
