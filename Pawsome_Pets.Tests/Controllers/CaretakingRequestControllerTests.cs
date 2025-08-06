@@ -96,7 +96,6 @@ public class CaretakingRequestControllerTests
 
 		var controller = new CaretakingRequestController(mockService.Object, mockUserManager.Object);
 
-		// Тук добавяме User в controller:
 		var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
 		{
 		new Claim(ClaimTypes.NameIdentifier, "wrong-user")

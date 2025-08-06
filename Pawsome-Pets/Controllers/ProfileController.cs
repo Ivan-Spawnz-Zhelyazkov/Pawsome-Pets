@@ -38,6 +38,10 @@ namespace Pawsome_Pets.Controllers
 		public async Task<IActionResult> Index()
 		{
 			ApplicationUser user = await userManager.GetUserAsync(User);
+			if (user == null)
+			{
+				return Challenge();
+			}
 			ProfileViewModel model = await profileService.GetProfileAsync(user);
 			return View(model);
 		}
